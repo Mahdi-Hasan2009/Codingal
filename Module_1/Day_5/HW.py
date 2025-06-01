@@ -1,0 +1,1 @@
+'''x must be even and lie between 50 and 100, but not divisible by 5.'''

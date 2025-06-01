@@ -5,3 +5,4 @@ sqroot = int(input())
 print(squareroot(sqroot))
 # Step 2
 print(sqroot**0.5)
+
