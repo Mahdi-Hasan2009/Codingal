@@ -1,7 +1,7 @@
 age = int(input("Enter your age: "))
 
 if age >=13 and age<=60:
-  is_weekend = input("Is it weekend: ")
+  is_weekend = input("Is it weekend (yes/no): ").lower()
   if is_weekend =="yes":
     if age<=25 and age>=13:
       print("550tk")
