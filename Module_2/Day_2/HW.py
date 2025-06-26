@@ -10,3 +10,4 @@ power = int(input("Enter Power: "))
 
 print(num**power)
 '''
+
