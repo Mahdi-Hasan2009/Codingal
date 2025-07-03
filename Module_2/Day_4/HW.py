@@ -11,3 +11,4 @@ for i in range(number):
     copy = copy // 2
 
 print("Binary:", binary)
+
