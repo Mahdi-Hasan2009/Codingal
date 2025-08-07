@@ -1,0 +1,22 @@
+"""smallnum = int(input("Enter a number: "))    
+largenum = int(input("Enter a number: "))  
+for num in range(smallnum,largenum+1):
+  for i in range(2,num):
+    if num % i==0:         
+      break
+    print(num)
+    break"""
+  
+  
+  
+  
+smallnum = int(input("Enter a number: "))    
+largenum = int(input("Enter a number: "))  
+
+for num in range(smallnum, largenum + 1):
+  if num > 1:
+    for i in range(2, num):
+      if num % i == 0:
+        break
+    else:
+      print(num)
