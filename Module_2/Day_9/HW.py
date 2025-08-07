@@ -1,10 +1,9 @@
-smallnum = int(input("Enter a number: "))    
-largenum = int(input("Enter a number: "))  
-
-for num in range(smallnum, largenum + 1):
-  if num > 1:
-    for i in range(2, num):
-      if num % i == 0:
-        break
-    else:
-      print(num)
+def change():  
+    for i in range(1):  
+        if 4 > 2.5:
+            taka = 4 - 2.5
+            print("Return:", taka, "$")
+            return taka
+        else:
+            break
+change()
