@@ -1,17 +1,12 @@
-try:
-  age = input("Enter your age: ")
-  if not age.isdigit():
-    raise ValueError("Invalid Input. Please Enter Integer Input")
-  
-  age_int = int(age)
-  
-  if age_int %2 == 0:
-    print(f"{age}: Even")
+import os 
+
+x = input("Do you want to shut your pc down:(yes/no) ").lower()
+
+def shutdown(acception):
+  if acception == "yes":
+    print("shutting down...")
+    os.system("shutdown /s /t 1")
   else:
-    print(f"{age}: Odd")
+    print("Ok")
     
-except ValueError as ex:
-  print("Error: ",ex)
-finally:
-  print("programme finished")
-     
+shutdown(x)
