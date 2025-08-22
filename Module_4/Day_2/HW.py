@@ -1,0 +1,1 @@
+tup = input("Enter a tuple")
