@@ -1,9 +1,3 @@
-
-
-
-
-
-
 test_dict = input("Enter a dictionary (like: {'Codingal': 3, 'is': 2, 'best': 2, 'for': 2, 'Coding': 1}): ")
 new_test_dict = eval(test_dict)
 
@@ -20,6 +14,8 @@ res = 0
 for key in new_test_dict:
     if new_test_dict[key] == K:
         res = res +  1
-
-
+        
+        
+        
+        
 print("Frequency of", K, "is :", res)

@@ -1,6 +1,7 @@
 class car:
   #brand mileage color
   # obj 2 mercedes bmw
+  #species = "car"
   species = "car"
   
   def __init__(self,brand,mileage,color):
