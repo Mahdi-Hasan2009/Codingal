@@ -19,6 +19,12 @@ class Employee(Person):
     self.salary = salary
     self.post = post
     
+  def display(self):
+    print(self.name)
+    print(self.id_number)
+    print(self.salary)
+    print(self.post)
+    
     
 # creation of an object variable or an instance
 
