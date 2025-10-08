@@ -22,7 +22,7 @@ class BMW(Car):
     self.mileage = mileage
     
   def specialFeatures(self):
-    print("Highest Mileage")
+    print("Lowest Mileage")
 
   
 obj1 = Toyota(4,"white",100)
