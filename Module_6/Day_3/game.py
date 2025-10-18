@@ -4,7 +4,7 @@ import random
 pygame.init()
 
 # Custom event IDs for color change events
-SPRITE_COLOR_CHANGE_EVENT = pygame.USEREVENT + 1
+SPRITE_COLOR_CHANGE_EVENT = pygame.USEREVENT + 1 
 BACKGROUND_COLOR_CHANGE_EVENT = pygame.USEREVENT + 2
 
 # Define basic colors using pygame.Color
