@@ -1,18 +1,33 @@
-import tkinter as tk
+from tkinter import *
 
-root = tk.Tk()
+root = Tk()
 root.title("Getting Started with Widgets")
-root.geometry("400x300")
+root.geometry("450x300")
 
-label = tk.Label(root,text="This activity aims to help you understand the basic widgets in an application")
+label = Label(root,text="This activity aims to help you understand the basic widgets in an application")
 label.pack()
 
-def on_click():
-  label.config(text="Button Clicked!")
+label2 = Label(root,text="Enter a number: ")
+label2.place(x=20, y=60)
+label2_entry = Entry()
+label2_entry.place(x=150, y=60)
 
+label3 = Label(root,text="Enter another number: ")
+label3.place(x=20, y=90)
+label3_entry = Entry()
+label3_entry.place(x=150, y=90)
 
-button = tk.Button(root,text = "Click me!",command = on_click)
-button.pack()
+def display():
+    sum = label2_entry+label3_entry
+    message = "\nCongratulations for your new account!"
+    textbox.insert(END, message)
+    textbox.insert(END, sum)
+  
+textbox = Text(bg="#BEBEBE", fg="black",height = 50)
+textbox.place(y=200)
+
+button = Button(root,text = "Calculate",command = display)
+button.place(x=100, y=120)
 
 
 root.mainloop()
