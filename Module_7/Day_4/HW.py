@@ -1,7 +1,7 @@
 from tkinter import *
 
 window = Tk()
-window.title("Age Calculator App")
+window.title("Interest counting app")
 window.geometry("400x400")
 
 def calculate_interest():
@@ -9,12 +9,13 @@ def calculate_interest():
     t = float(time_entry.get())
     r = float(rate_entry.get())
 
-    si = (p * t * r) / 100
+    si = (p* t *r) / 100
 
     
-    ci = p * (1 + r/100) ** t - p
+    ci = p *(1+ r/100) ** t - p
 
     result_label.config(
+      
         text=f"Simple Interest = {si}\nCompound Interest = {ci}"
     )
 
@@ -42,5 +43,7 @@ Button(window, text="Calculate", command=calculate_interest, bg="lightgreen").pa
 
 result_label = Label(window, text="", font=("Arial", 12))
 result_label.pack(pady=10)
+
+
 
 window.mainloop()
