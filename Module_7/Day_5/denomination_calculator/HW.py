@@ -1,7 +1,7 @@
 import tkinter as tk
 
 root = tk.Tk()
-root.title("Length Converter App")
+root.title("Password Checker App")
 root.geometry("400x400")
 
 
