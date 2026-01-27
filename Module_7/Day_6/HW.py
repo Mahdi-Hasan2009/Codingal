@@ -2,7 +2,7 @@ import tkinter as tk
 import random
 
 root = tk.Tk()
-root.title("Length Converter App")
+root.title("Rock, Paper, Scissors Game")
 
 root.geometry("400x400")
 
@@ -10,7 +10,7 @@ def play(user):
   computer = random.choice(["Rock", "Paper", "Scissors"])
 
   if user == computer:
-    result = "Tie"
+    result = "Draw"
   elif (user == "Rock" and computer == "Scissors") or \
     (user == "Paper" and computer == "Rock") or \
     (user == "Scissors" and computer == "Paper"):
