@@ -1,0 +1,9 @@
+# Sob config file ignore korar jonno
+**/config.py
+**/config1.py
+config.py
+config1.py
+
+# Cache ebong ignore file
+__pycache__/
+*.pyc

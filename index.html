@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cyber Surfer: The Chase</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; }
+        #ui { position: absolute; width: 100%; top: 20px; text-align: center; color: #0ff; pointer-events: none; z-index: 10; }
+        #score { font-size: 40px; font-weight: bold; text-shadow: 0 0 15px #0ff; }
+        #coins { color: #ff0; font-size: 20px; }
+        #game-over { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: rgba(20, 0, 40, 0.95); padding: 50px; border: 3px solid #f0f;
+            text-align: center; color: #fff; display: none; z-index: 100; box-shadow: 0 0 50px #f0f;
+        }
+        button { background: #f0f; color: white; border: none; padding: 15px 30px; cursor: pointer; font-size: 18px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <div id="score">0000</div>
+        <div id="coins">DATA BITS: 0</div>
+    </div>
+    <div id="game-over">
+        <h1 style="color:#ff0033">BUSTED BY CYBER-POLICE</h1>
+        <p id="final-stats"></p>
+        <button onclick="location.reload()">RESPAWN</button>
+    </div>
+
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- CORE SETTINGS ---
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050010, 0.025);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        let lane = 1, score = 0, coins = 0, speed = 0.7, isJumping = false, jumpY = 0, isGameOver = false;
+        const obstacles = [], coinModels = [];
+
+        // --- PLAYER & POLICE ---
+        const player = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.2, 0.8), new THREE.MeshStandardMaterial({color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 2}));
+        player.position.y = 0.6;
+        scene.add(player);
+
+        const police = new THREE.Mesh(new THREE.SphereGeometry(0.5), new THREE.MeshStandardMaterial({color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 5}));
+        scene.add(police);
+
+        // --- WORLD GEN ---
+        const grid = new THREE.GridHelper(2000, 100, 0xff00ff, 0x220044);
+        grid.position.y = -0.01;
+        scene.add(grid);
+
+        const light = new THREE.PointLight(0x00ffff, 10, 20);
+        scene.add(light);
+
+        // --- SPAWNING ---
+        function spawnStuff() {
+            if(isGameOver) return
+            const xPos = (Math.floor(Math.random()*3)-1) * 4;
+            
+            if(Math.random() > 0.4) {
+                const obs = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshStandardMaterial({color: 0xff0055,       // Hot Neon Pink/Red
+            emissive: 0xff0055,    // Glow color
+            emissiveIntensity: 0.5,
+            metalness: 0.8,
+            roughness: 0.2}));
+                obs.position.set(xPos, 1, player.position.z - 80);
+                scene.add(obs); obstacles.push(obs);
+            } else {
+                const c = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.1), new THREE.MeshStandardMaterial({color: 0xffff00, emissive: 0xffff00}));
+                c.position.set(xPos, 1, player.position.z - 80);
+                scene.add(c); coinModels.push(c);
+            }
+            setTimeout(spawnStuff, 800 / speed);
+        }
+        spawnStuff();
+
+        // --- INPUT ---
+        window.onkeydown = (e) => {
+            if(isGameOver) return;
+            if((e.key === 'ArrowLeft' || e.key === 'a') && lane > 0) lane--;
+            if((e.key === 'ArrowRight' || e.key === 'd') && lane < 2) lane++;
+            if((e.key === ' ' || e.key === 'ArrowUp') && !isJumping) { isJumping = true; jumpY = 0.3; }
+        };
+
+        // --- MAIN LOOP ---
+        function animate() {
+            if(isGameOver) return;
+            requestAnimationFrame(animate);
+
+            speed += 0.0002;
+            player.position.z -= speed;
+            police.position.set(player.position.x, 3 + Math.sin(Date.now()*0.01), player.position.z + 8);
+            light.position.copy(player.position);
+
+            // Movement Logic
+            const targetX = (lane - 1) * 4;
+            player.position.x += (targetX - player.position.x) * 0.15;
+            player.rotation.z = -(targetX - player.position.x) * 0.2;
+
+            if(isJumping) {
+                player.position.y += jumpY; jumpY -= 0.015;
+                if(player.position.y <= 0.6) { player.position.y = 0.6; isJumping = false; }
+            }
+
+            // Camera Setup
+            camera.position.set(player.position.x * 0.7, 5, player.position.z + 12);
+            camera.lookAt(player.position.x, 1, player.position.z - 5);
+
+            // Collisions
+            const pBox = new THREE.Box3().setFromObject(player);
+            obstacles.forEach((o, i) => {
+                if(pBox.intersectsBox(new THREE.Box3().setFromObject(o))) {
+                    isGameOver = true;
+                    document.getElementById('game-over').style.display = 'block';
+                    document.getElementById('final-stats').innerText = `Data Stolen: ${Math.floor(score)} | Bits Collected: ${coins}`;
+                }
+            });
+
+            coinModels.forEach((c, i) => {
+                c.rotation.y += 0.1;
+                if(pBox.intersectsBox(new THREE.Box3().setFromObject(c))) {
+                    scene.remove(c); coinModels.splice(i, 1); coins++;
+                    document.getElementById('coins').innerText = `DATA BITS: ${coins}`;
+                }
+            });
+
+            score += speed;
+            document.getElementById('score').innerText = Math.floor(score).toString().padStart(4, '0');
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

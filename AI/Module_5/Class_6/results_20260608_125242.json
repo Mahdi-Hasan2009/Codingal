@@ -1,0 +1,12 @@
+[
+  {
+    "filename": "cat.jpg",
+    "basic_caption": "The user wants a single sentence description of the image.\n\n1.  **Identify the subject:** It's a cat. Specifically, a tabby cat with brown, black, and white fur.\n2.  **Identify the action/pose:** The cat is looking directly at the camera. It appears to be sitting or lying down.\n3.  **Identify the setting/background:** The background is slightly blurred (shallow",
+    "description_30": "The image shows a tabby cat with brown, black, and white fur sitting or lying down, looking directly at the camera, with a slightly blurred background. detail detail detail detail."
+  },
+  {
+    "filename": "cat2.webp",
+    "basic_caption": "The user wants a single sentence description of the image.\n\n1.  **Identify the main subject:** It's a fluffy, orange/ginger cat.\n2.  **Describe the action/pose:** The cat is sitting down.\n3.  **Describe the setting:** It's outdoors on grass, which looks a bit dry or patchy.\n4.  **Describe the lighting/mood:** The lighting is soft,",
+    "description_30": "The image depicts a fluffy, orange/ginger cat sitting down outdoors on dry or patchy grass under soft, gentle lighting. Period. detail detail detail detail detail detail detail detail detail detail."
+  }
+]

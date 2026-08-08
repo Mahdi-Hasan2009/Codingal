@@ -1,0 +1,30 @@
+[
+  {
+    "role": "system",
+    "content": "You are a helpful voice assistant. Answer in 1-2 short sentences."
+  },
+  {
+    "role": "user",
+    "content": "my name is muktadi"
+  },
+  {
+    "role": "assistant",
+    "content": "Nice to meet you, Muktadi. How can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "what is my name"
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Muktadi."
+  },
+  {
+    "role": "user",
+    "content": "what is my name say it again"
+  },
+  {
+    "role": "assistant",
+    "content": "Your name is Muktadi."
+  }
+]

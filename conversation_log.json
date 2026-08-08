@@ -1,0 +1,18 @@
+[
+    {
+        "timestamp": "2026-08-07 11:11:14",
+        "speaker": "English Speaker",
+        "original_text": "hello how are you",
+        "original_language": "en",
+        "translated_text": "হ্যালো আপনি কেমন আছেন",
+        "translated_language": "bn"
+    },
+    {
+        "timestamp": "2026-08-07 11:11:25",
+        "speaker": "Target Language Speaker",
+        "original_text": "কেমন আছো",
+        "original_language": "bn",
+        "translated_text": "how are you",
+        "translated_language": "en"
+    }
+]

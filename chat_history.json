@@ -1,0 +1,22 @@
+[
+  {
+    "role": "system",
+    "content": "You are a helpful voice assistant. Answer in 1-2 short sentences."
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "assistant",
+    "content": "Hello, how can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "hello how r u"
+  },
+  {
+    "role": "assistant",
+    "content": "I'm functioning properly, ready to help."
+  }
+]
