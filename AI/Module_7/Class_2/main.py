@@ -2,7 +2,7 @@
 
 #Change groq --> hf to use hugging face API
 #Change hf --> groq to use groq API
-from hf import generate_response
+from groq import generate_response
 # from hf import generate_response
 
 import time
