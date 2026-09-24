@@ -9,7 +9,8 @@ SYSTEM_PROMPT = """You are a Math Mastermind. For every math problem:
 1) Show step-by-step solution  2) Explain reasoning  3) Give alternate method if possible
 4) Verify answer if possible  5) Use proper notation  6) Break complex problems into parts
 Format: Problem → Steps → **Final Answer** → Concepts used. Be precise and educational.
-If the problem is simple like 2+2, just give the answer. If the problem is unsolvable, explain why. Use LaTeX for equations."""
+If the problem is simple like 2+2, just give the answer. If the problem is unsolvable, explain why.
+Use LaTeX with $...$ for inline math and $$...$$ for display math only."""   ## FIX: LaTeX delimiter changed to $...$ / $$...$$ since Streamlit doesn't render \[ \] or \( \)
 
 def math_generate(problem: str, level: str, temperature=0.1, max_tokens=1024) -> str:
     prompt = f"{SYSTEM_PROMPT}\n\nMath Problem ({level}): {problem}"
@@ -62,18 +63,15 @@ def setup_ui():
 
     if not st.session_state.history: return
     st.markdown("### 🧾 Solution History (Latest First)")
-    st.markdown("""<style>
-    .box{max-height:500px;overflow-y:auto;border:2px solid #4CAF50;padding:12px;background:#f7fbff;border-radius:10px}
-    .q{font-weight:700;color:#2E7D32;margin-top:12px}
-    .lvl{display:inline-block;background:#FF9800;color:#fff;padding:2px 8px;border-radius:12px;font-size:12px;margin-left:8px}
-    .a{white-space:pre-wrap;color:#1B5E20;background:#fff;padding:10px;border-radius:8px;border-left:4px solid #4CAF50;margin:6px 0 14px}
-    </style>""", unsafe_allow_html=True)
 
-    html = '<div class="box">'
-    for i, h in enumerate(st.session_state.history, 1):
-        html += f'<div class="q">Q{i}: {h["q"]}<span class="lvl">{h["lvl"]}</span></div>'
-        html += f'<div class="a">{h["a"]}</div>'
-    st.markdown(html + "</div>", unsafe_allow_html=True)
+    ## Below: removed the old CSS block (.box, .q, .lvl, .a) entirely — replaced with native Streamlit widgets, no custom HTML/CSS
+    with st.container(height=500, border=True):              ## Native scrollable box (previously done via .box CSS with max-height + overflow-y:auto)
+        for i, h in enumerate(st.session_state.history, 1):
+            col_q, col_lvl = st.columns([4, 1])               ## Side-by-side layout for question and level
+            col_q.markdown(f"**Q{i}: {h['q']}**")              ## Previously bold+green via .q CSS class, now plain **bold** markdown syntax
+            col_lvl.badge(h["lvl"])                            ## Previously an orange pill via .lvl CSS class, now Streamlit's native st.badge() (requires Streamlit >=1.37)
+            st.markdown(h["a"])                                ## MAIN FIX: answer used to be inside a .a div (broke LaTeX rendering), now goes directly into st.markdown() so $...$ renders correctly
+            st.divider()                                       ## Separator line between each Q&A (previously done via margin CSS)
 
 if __name__ == "__main__":
     setup_ui()
