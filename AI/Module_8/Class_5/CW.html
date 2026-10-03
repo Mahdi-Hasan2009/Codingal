@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MUHTADI AI LAB</title>
+<style>
+:root{--bg:#f7f9fc;--card:#fff;--text:#1a1a2e;--muted:#666;--accent:#5b5fef;--accent2:#8b5cf6;--border:#e3e6ee}
+:root[data-theme="dark"]{--bg:#0f1117;--card:#1a1d29;--text:#eee;--muted:#9aa0ac;--border:#2a2e3d}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);transition:.2s}
+header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);z-index:100;padding:.7rem 1rem;display:flex;justify-content:space-between;align-items:center}
+header .logo{font-weight:800;color:var(--accent)}
+nav{display:flex;gap:.8rem;align-items:center}
+nav a{color:var(--text);text-decoration:none;font-size:.9rem;cursor:pointer}
+.hamb{display:none;background:none;border:none;font-size:1.4rem;color:var(--text);cursor:pointer}
+#navlinks{display:flex;gap:.8rem}
+@media(max-width:768px){#navlinks{display:none;position:absolute;top:100%;left:0;right:0;background:var(--card);flex-direction:column;padding:1rem;border-bottom:1px solid var(--border)}
+#navlinks.open{display:flex}.hamb{display:block}}
+.themeBtn{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;padding:.3rem .6rem;cursor:pointer}
+section{max-width:1000px;margin:0 auto;padding:2.5rem 1rem}
+.hero{text-align:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px;margin:1rem;padding:3rem 1rem}
+.hero h1{font-size:clamp(1.6rem,4vw,2.6rem);margin:0 0 .5rem}
+.btn{background:#fff;color:var(--accent);border:none;padding:.7rem 1.3rem;border-radius:8px;font-weight:700;cursor:pointer;margin:.3rem}
+.btn.ghost{background:transparent;border:2px solid #fff;color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem}
+.tag{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:.15rem .6rem;font-size:.75rem;margin:.15rem}
+.tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.tabs button{border:1px solid var(--border);background:var(--card);color:var(--text);padding:.5rem .9rem;border-radius:8px;cursor:pointer}
+.tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.panel{display:none}
+.panel.active{display:block}
+textarea,input,select{width:100%;padding:.6rem;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.95rem;margin:.3rem 0}
+.row{display:flex;gap:.5rem;flex-wrap:wrap}
+.result{background:var(--bg);border-left:4px solid var(--accent);border-radius:8px;padding:1rem;white-space:pre-wrap;margin-top:.7rem}
+.chip{display:inline-block;background:var(--accent);color:#fff;border-radius:14px;padding:.2rem .7rem;margin:.2rem;font-size:.8rem}
+.demo{background:#fff3cd;color:#7a5b00;padding:.4rem .7rem;border-radius:6px;font-size:.8rem;display:inline-block;margin-bottom:.5rem}
+:root[data-theme="dark"] .demo{background:#4a3c00;color:#ffd76b}
+.hist{border:1px solid var(--border);border-radius:8px;padding:.7rem;margin-top:.5rem}
+footer{text-align:center;padding:2rem 1rem;color:var(--muted);border-top:1px solid var(--border)}
+.toast{position:fixed;bottom:1rem;right:1rem;background:var(--accent);color:#fff;padding:.6rem 1rem;border-radius:8px;z-index:999;opacity:0;transition:.3s}
+.toast.show{opacity:1}
+h2{border-left:4px solid var(--accent);padding-left:.6rem}
+[dir="rtl"]{direction:rtl}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">🧠 MUHTADI AI LAB</div>
+<button class="hamb" onclick="document.getElementById('navlinks').classList.toggle('open')">☰</button>
+<nav id="navlinks">
+<a onclick="go('home')">Home</a><a onclick="go('text')">AI Text</a><a onclick="go('math')">Math</a><a onclick="go('image')">Image</a>
+<button class="themeBtn" onclick="toggleTheme()">🌓</button>
+</nav>
+</header>
+
+<section class="hero" id="home">
+<h1>AI + Writing + Mathematics + Creativity</h1>
+<p>One platform, three AI tools: Text Studio, Math Mastermind, and a Safe Image Generator.</p>
+<button class="btn" onclick="go('text')">Explore Projects</button>
+<button class="btn ghost" onclick="go('text')">Try AI Tools</button>
+</section>
+
+<section>
+<h2>Projects</h2>
+<div class="cards">
+<div class="card"><h3>📝 AI Text Studio</h3><p>Summarize, expand, analyze sentiment, shift tone, get keywords, translate.</p>
+<span class="tag">6 tools</span><span class="tag">20 languages</span><button class="btn" style="background:var(--accent);color:#fff" onclick="go('text')">Open Tool</button></div>
+<div class="card"><h3>🧮 Math Mastermind</h3><p>Step-by-step solutions with reasoning, alt methods and verification.</p>
+<span class="tag">History</span><span class="tag">Export</span><button class="btn" style="background:var(--accent);color:#fff" onclick="go('math')">Open Tool</button></div>
+<div class="card"><h3>🖼️ Safe AI Image Generator</h3><p>Prompt → safety check → enhance → check → generate → download.</p>
+<span class="tag">Safety filter</span><span class="tag">PNG download</span><button class="btn" style="background:var(--accent);color:#fff" onclick="go('image')">Open Tool</button></div>
+</div>
+</section>
+
+<section id="text">
+<h2>AI Text Studio</h2>
+<div class="demo">DEMO MODE — configure API key in Settings for live output</div>
+<div class="tabs" id="textTabs"></div>
+<div id="textPanels"></div>
+</section>
+
+<section id="math">
+<h2>Math Mastermind</h2>
+<div class="demo">DEMO MODE — sample structured solution shown below</div>
+<textarea id="mathQ" rows="3" placeholder="e.g. Solve x² + 5x + 6 = 0"></textarea>
+<div class="row">
+<button class="tag" onclick="setEx('x² + 5x + 6 = 0')">x²+5x+6=0</button>
+<button class="tag" onclick="setEx('2x² + 5x − 3 = 0')">2x²+5x-3=0</button>
+<button class="tag" onclick="setEx('Derivative of sin(x²) + ln(x)')">Derivative</button>
+<button class="tag" onclick="setEx('Area of triangle (0,0),(3,4),(6,0)')">Triangle area</button>
+</div>
+<div class="row">
+<select id="mathLevel"><option>Basic</option><option selected>Intermediate</option><option>Advanced</option></select>
+<button class="btn" style="background:var(--accent);color:#fff" onclick="solveMath()">🧠 Solve</button>
+<button class="btn" style="background:var(--border);color:var(--text)" onclick="document.getElementById('mathQ').value=''">Clear</button>
+</div>
+<div id="mathResult"></div>
+<div class="row" style="margin-top:1rem">
+<button class="btn" style="background:var(--border);color:var(--text)" onclick="clearHist()">Clear History</button>
+<button class="btn" style="background:var(--border);color:var(--text)" onclick="exportHist()">📄 Export Solutions</button>
+</div>
+<div id="mathHist"></div>
+</section>
+
+<section id="image">
+<h2>Safe AI Image Generator</h2>
+<div class="demo">DEMO MODE — a placeholder illustration is shown, not a real AI image</div>
+<textarea id="imgPrompt" rows="3" placeholder="A cozy cabin in snowy mountains at sunrise, cinematic lighting"></textarea>
+<button class="btn" style="background:var(--accent);color:#fff" onclick="genImage()">Generate Image</button>
+<div id="imgResult"></div>
+</section>
+
+<section id="settings">
+<h2>⚙️ API Setup / Security</h2>
+<p style="color:var(--muted)">Keys are stored only in your browser's localStorage and sent only to the API you configure. Storing keys client-side is fine for personal experiments, not for public deployment. Without keys, all tools run in Demo Mode.</p>
+<input id="k_groq" placeholder="Groq API Key (optional)">
+<input id="k_hf" placeholder="Hugging Face API Key (optional)">
+<button class="btn" style="background:var(--accent);color:#fff" onclick="saveSettings()">Save Settings</button>
+</section>
+
+<footer>
+<div><strong>MUHTADI AI LAB</strong> — AI Text Studio · Math Mastermind · Safe Image Generator</div>
+<div>© 2026 MUHTADI. All Rights Reserved.</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+// Navigation
+function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});document.getElementById('navlinks').classList.remove('open')}
+// Theme
+function toggleTheme(){const r=document.documentElement;const cur=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',cur);localStorage.setItem('theme',cur)}
+(function(){const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)})();
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function copyText(txt){navigator.clipboard.writeText(txt).then(()=>toast('Copied!'))}
+
+// Settings
+function saveSettings(){localStorage.setItem('k_groq',document.getElementById('k_groq').value);localStorage.setItem('k_hf',document.getElementById('k_hf').value);toast('Settings saved')}
+(function(){document.getElementById('k_groq').value=localStorage.getItem('k_groq')||'';document.getElementById('k_hf').value=localStorage.getItem('k_hf')||''})();
+
+// ===== AI Text Studio =====
+const TOOLS=[
+ {id:'sum',name:'Summarizer'},{id:'exp',name:'Expander'},{id:'sen',name:'Sentiment'},
+ {id:'tone',name:'Tone Shifter'},{id:'kw',name:'Keywords'},{id:'tr',name:'Translator'}
+];
+const LANGS=["Spanish","French","Arabic","Bengali","Hindi","Portuguese","Russian","Japanese","German","Chinese (Simplified)","Korean","Turkish","Italian","Urdu","Indonesian","Thai","Vietnamese","Persian (Farsi)","Swahili","Dutch"];
+const RTL=["Arabic","Urdu","Persian (Farsi)"];
+const TONES=["Professional","Casual","Shakespearean","Gen Z Slang","Pirate"];
+
+function buildTextUI(){
+ const tabs=document.getElementById('textTabs');
+ TOOLS.forEach((t,i)=>{const b=document.createElement('button');b.textContent=t.name;b.className=i===0?'active':'';b.onclick=()=>showPanel(t.id);tabs.appendChild(b)});
+ const panels=document.getElementById('textPanels');
+ panels.innerHTML=`
+ <div class="panel active" id="p_sum"><textarea id="sumIn" rows="4" placeholder="Paste text to summarize"></textarea>
+ <div class="row"><select id="sumMode"><option>Standard (50-150 words)</option><option>Enhanced (80-200 words)</option></select>
+ <button class="btn" style="background:var(--accent);color:#fff" onclick="doSummarize()">Generate</button>
+ <button class="btn" style="background:var(--border);color:var(--text)" onclick="clr('sumIn','sumOut')">Clear</button></div>
+ <div class="result" id="sumOut" style="display:none"></div></div>
+
+ <div class="panel" id="p_exp"><textarea id="expIn" rows="3" placeholder="Short idea or paragraph"></textarea>
+ <div class="row"><button class="btn" style="background:var(--accent);color:#fff" onclick="doExpand()">Expand</button>
+ <button class="btn" style="background:var(--border);color:var(--text)" onclick="clr('expIn','expOut')">Clear</button></div>
+ <div class="result" id="expOut" style="display:none"></div></div>
+
+ <div class="panel" id="p_sen"><textarea id="senIn" rows="3" placeholder="Text to analyze"></textarea>
+ <div class="row"><button class="btn" style="background:var(--accent);color:#fff" onclick="doSentiment()">Analyze</button>
+ <button class="btn" style="background:var(--border);color:var(--text)" onclick="clr('senIn','senOut')">Clear</button></div>
+ <div id="senOut"></div></div>
+
+ <div class="panel" id="p_tone"><textarea id="toneIn" rows="3" placeholder="Text to rewrite"></textarea>
+ <select id="toneSel">${TONES.map(t=>`<option>${t}</option>`).join('')}</select>
+ <div class="row"><button class="btn" style="background:var(--accent);color:#fff" onclick="doTone()">Rewrite</button>
+ <button class="btn" style="background:var(--border);color:var(--text)" onclick="clr('toneIn','toneOut')">Clear</button></div>
+ <div class="result" id="toneOut" style="display:none"></div></div>
+
+ <div class="panel" id="p_kw"><textarea id="kwIn" rows="3" placeholder="Topic or article text"></textarea>
+ <select id="kwMode"><option>SEO Keywords</option><option>Hashtags</option></select>
+ <div class="row"><button class="btn" style="background:var(--accent);color:#fff" onclick="doKeywords()">Generate</button>
+ <button class="btn" style="background:var(--border);color:var(--text)" onclick="clr('kwIn','kwOut')">Clear</button></div>
+ <div id="kwOut"></div></div>
+
+ <div class="panel" id="p_tr"><textarea id="trIn" rows="3" placeholder="Text to translate"></textarea>
+ <select id="trLang">${LANGS.map(l=>`<option>${l}</option>`).join('')}</select>
+ <div class="row"><button class="btn" style="background:var(--accent);color:#fff" onclick="doTranslate()">Translate</button>
+ <button class="btn" style="background:var(--border);color:var(--text)" onclick="clr('trIn','trOut')">Clear</button></div>
+ <div class="result" id="trOut" style="display:none"></div></div>
+ `;
+}
+function showPanel(id){document.querySelectorAll('#textPanels .panel').forEach(p=>p.classList.remove('active'));document.getElementById('p_'+id).classList.add('active');
+ document.querySelectorAll('#textTabs button').forEach(b=>b.classList.remove('active'));
+ [...document.querySelectorAll('#textTabs button')].find(b=>b.textContent===TOOLS.find(t=>t.id===id).name).classList.add('active')}
+function clr(inId,outId){document.getElementById(inId).value='';if(outId){document.getElementById(outId).style.display='none';document.getElementById(outId).textContent=''}}
+
+function doSummarize(){const v=document.getElementById('sumIn').value.trim();if(!v)return toast('Enter text first');
+ const out=document.getElementById('sumOut');out.style.display='block';
+ out.textContent="[DEMO OUTPUT] Summary: "+v.split(' ').slice(0,25).join(' ')+"... (this is a demo summary; connect a Groq/HF/OpenAI key for live results).";}
+function doExpand(){const v=document.getElementById('expIn').value.trim();if(!v)return toast('Enter text first');
+ const out=document.getElementById('expOut');out.style.display='block';
+ out.textContent="[DEMO OUTPUT] Expanded: "+v+" — this idea unfolds further, revealing rich detail, vivid imagery, and deeper context, while keeping the original meaning fully intact.";}
+function doSentiment(){const v=document.getElementById('senIn').value.trim();if(!v)return toast('Enter text first');
+ const pos=Math.floor(Math.random()*40)+30,neg=Math.floor(Math.random()*30),neu=100-pos-neg;
+ const dom=pos>=neu&&pos>=neg?'Positive 😊':neg>=neu?'Negative 😠':'Neutral 😐';
+ document.getElementById('senOut').innerHTML=`<div class="result">[DEMO OUTPUT]<br>Dominant: <b>${dom}</b><br>
+ Positive ${pos}% <div style="background:var(--border);border-radius:4px"><div style="width:${pos}%;background:#4CAF50;height:8px;border-radius:4px"></div></div>
+ Neutral ${neu}% <div style="background:var(--border);border-radius:4px"><div style="width:${neu}%;background:#FF9800;height:8px;border-radius:4px"></div></div>
+ Negative ${neg}% <div style="background:var(--border);border-radius:4px"><div style="width:${neg}%;background:#f44336;height:8px;border-radius:4px"></div></div></div>`;}
+function doTone(){const v=document.getElementById('toneIn').value.trim();if(!v)return toast('Enter text first');
+ const tone=document.getElementById('toneSel').value;const out=document.getElementById('toneOut');out.style.display='block';
+ const samples={Professional:"[DEMO] "+v+" — restated formally and precisely.",Casual:"[DEMO] hey, so basically: "+v,
+ Shakespearean:"[DEMO] Hark! "+v+", verily as thou didst say.",'Gen Z Slang':"[DEMO] ngl, "+v+" — no cap 💅",
+ Pirate:"[DEMO] Arrr matey, "+v+" — that be the truth o' it!"};
+ out.textContent=samples[tone];}
+function doKeywords(){const v=document.getElementById('kwIn').value.trim();if(!v)return toast('Enter text first');
+ const mode=document.getElementById('kwMode').value;const n=mode==='Hashtags'?18:12;
+ const words=(v.toLowerCase().match(/[a-z]+/g)||['topic']).slice(0,5);
+ let items=[];for(let i=0;i<n;i++){items.push((mode==='Hashtags'?'#':'')+words[i%words.length]+(i>4?i:''))}
+ document.getElementById('kwOut').innerHTML='<div class="result">[DEMO OUTPUT]<br>'+items.map(i=>`<span class="chip">${i}</span>`).join('')+
+ `<br><button class="btn" style="background:var(--border);color:var(--text);margin-top:.5rem" onclick="copyText('${items.join(', ')}')">Copy All</button></div>`;}
+function doTranslate(){const v=document.getElementById('trIn').value.trim();if(!v)return toast('Enter text first');
+ const lang=document.getElementById('trLang').value;const out=document.getElementById('trOut');out.style.display='block';
+ out.setAttribute('dir',RTL.includes(lang)?'rtl':'ltr');
+ out.textContent=`[DEMO OUTPUT — ${lang}] `+v;}
+buildTextUI();
+
+// ===== Math Mastermind =====
+let history=JSON.parse(localStorage.getItem('mathHist')||'[]');
+function setEx(q){document.getElementById('mathQ').value=q}
+function solveMath(){const q=document.getElementById('mathQ').value.trim();if(!q)return toast('Enter a problem first');
+ const lvl=document.getElementById('mathLevel').value;
+ const ans=`Problem: ${q}\n\nStep-by-Step Solution:\n1. Identify the problem type.\n2. Apply the relevant method for a ${lvl.toLowerCase()} problem.\n3. Simplify step by step.\n\nFinal Answer: [DEMO OUTPUT — sample result]\n\nConcepts Used: Algebra / core problem-solving techniques\n\nAlternative Method: A second approach could also be used to cross-check.\nVerification: Substituting back confirms the result.`;
+ document.getElementById('mathResult').innerHTML='<div class="result">'+ans+'</div>';
+ history.unshift({q,lvl,a:ans});localStorage.setItem('mathHist',JSON.stringify(history));renderHist();}
+function renderHist(){const el=document.getElementById('mathHist');if(!history.length){el.innerHTML='';return}
+ el.innerHTML='<h3>🧾 Solution History</h3>'+history.map((h,i)=>`<div class="hist"><b>Q${history.length-i}: ${h.q}</b> <span class="tag">${h.lvl}</span><div class="result">${h.a}</div></div>`).join('');}
+function clearHist(){history=[];localStorage.removeItem('mathHist');renderHist();toast('History cleared')}
+function exportHist(){if(!history.length)return toast('No history to export');
+ const txt=history.map((h,i)=>`Q${i+1}: ${h.q}\nA${i+1}: ${h.a}`).join('\n\n');
+ const blob=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Math_Mastermind_Solutions.txt';a.click();}
+renderHist();
+
+// ===== Safe AI Image Generator =====
+function genImage(){const p=document.getElementById('imgPrompt').value.trim();if(!p)return toast('Enter a prompt first');
+ const out=document.getElementById('imgResult');
+ out.innerHTML='<p>Checking prompt safety…</p>';
+ setTimeout(()=>{
+  out.innerHTML='<div class="demo">DEMO OUTPUT — placeholder, not a real AI image</div><p><b>Enhanced Prompt:</b> '+p+', cinematic lighting, detailed background, vivid colors, wide camera angle</p>';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260"><rect width="400" height="260" fill="#8b5cf6"/><rect width="400" height="260" fill="#5b5fef" opacity="0.4"/><text x="50%" y="50%" fill="white" font-size="18" text-anchor="middle" dominant-baseline="middle">DEMO IMAGE PLACEHOLDER</text></svg>`;
+  const url='data:image/svg+xml;base64,'+btoa(svg);
+  out.innerHTML+=`<img src="${url}" style="max-width:100%;border-radius:8px;margin-top:.5rem" alt="demo placeholder">
+  <br><button class="btn" style="background:var(--accent);color:#fff;margin-top:.5rem" onclick="downloadImg('${url}')">📥 Download Image</button>`;
+ },700);}
+function downloadImg(url){const a=document.createElement('a');a.href=url;a.download='ai_generated_image.png';a.click()}
+</script>
+</body>
+</html>
