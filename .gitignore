@@ -3,6 +3,7 @@
 **/config1.py
 config.py
 config1.py
+config.js
 
 # Cache ebong ignore file
 __pycache__/

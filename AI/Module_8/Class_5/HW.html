@@ -76,7 +76,7 @@ h2{border-left:4px solid var(--accent);padding-left:.6rem}
 
 <section id="text">
 <h2>AI Text Studio</h2>
-<div class="demo">DEMO MODE — configure API key in Settings for live output</div>
+<div class="demo">DEMO MODE — add your API key in config.js for live output</div>
 <div class="tabs" id="textTabs"></div>
 <div id="textPanels"></div>
 </section>
@@ -112,20 +112,13 @@ h2{border-left:4px solid var(--accent);padding-left:.6rem}
 <div id="imgResult"></div>
 </section>
 
-<section id="settings">
-<h2>⚙️ API Setup / Security</h2>
-<p style="color:var(--muted)">Keys are stored only in your browser's localStorage and sent only to the API you configure. Storing keys client-side is fine for personal experiments, not for public deployment. Without keys, all tools run in Demo Mode.</p>
-<input id="k_groq" placeholder="Groq API Key">
-<input id="k_hf" placeholder="Hugging Face API Key">
-<button class="btn" style="background:var(--accent);color:#fff" onclick="saveSettings()">Save Settings</button>
-</section>
-
 <footer>
 <div><strong>MUHTADI AI LAB</strong> — AI Text Studio · Math Mastermind · Safe Image Generator</div>
 <div>© 2026 MUHTADI. All Rights Reserved.</div>
 </footer>
 <div class="toast" id="toast"></div>
 
+<script src="config.js"></script>
 <script>
 // Navigation
 function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});document.getElementById('navlinks').classList.remove('open')}
@@ -134,10 +127,6 @@ function toggleTheme(){const r=document.documentElement;const cur=r.getAttribute
 (function(){const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)})();
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
 function copyText(txt){navigator.clipboard.writeText(txt).then(()=>toast('Copied!'))}
-
-// Settings
-function saveSettings(){localStorage.setItem('k_groq',document.getElementById('k_groq').value);localStorage.setItem('k_hf',document.getElementById('k_hf').value);toast('Settings saved')}
-(function(){document.getElementById('k_groq').value=localStorage.getItem('k_groq')||'';document.getElementById('k_hf').value=localStorage.getItem('k_hf')||''})();
 
 // ===== AI Text Studio =====
 const TOOLS=[
@@ -252,6 +241,114 @@ function genImage(){const p=document.getElementById('imgPrompt').value.trim();if
   <br><button class="btn" style="background:var(--accent);color:#fff;margin-top:.5rem" onclick="downloadImg('${url}')">📥 Download Image</button>`;
  },700);}
 function downloadImg(url){const a=document.createElement('a');a.href=url;a.download='ai_generated_image.png';a.click()}
+</script>
+<script>
+// Key thakle real API call hobe, na thakle ager Demo output-i cholbe.
+const GROQ_MODEL='openai/gpt-oss-120b';
+const HF_MODEL='black-forest-labs/FLUX.1-schnell';
+const gkey=()=>((typeof CONFIG!=='undefined'&&CONFIG.GROQ_KEY)||'').trim();
+const hkey=()=>((typeof CONFIG!=='undefined'&&CONFIG.HF_KEY)||'').trim();
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+async function groq(system,user,json){
+ const body={model:GROQ_MODEL,temperature:0.6,messages:[{role:'system',content:system},{role:'user',content:user}]};
+ if(json)body.response_format={type:'json_object'};
+ const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',
+  headers:{'Content-Type':'application/json','Authorization':'Bearer '+gkey()},body:JSON.stringify(body)});
+ if(!r.ok)throw new Error('Groq API error '+r.status);
+ return (await r.json()).choices[0].message.content.trim();
+}
+async function runText(inId,outId,sys,pre){
+ const v=document.getElementById(inId).value.trim();if(!v)return toast('Enter text first');
+ const out=document.getElementById(outId);out.style.display='block';out.textContent='Loading…';
+ try{out.textContent=await groq(sys,(pre||'')+v)}catch(e){out.textContent='Error: '+e.message}
+}
+
+// Summarizer
+const _sum=doSummarize;
+doSummarize=function(){if(!gkey())return _sum();
+ const enh=document.getElementById('sumMode').value.startsWith('Enhanced');
+ runText('sumIn','sumOut','Summarize the text in '+(enh?'80-200':'50-150')+' words. Output only the summary.');}
+// Expander
+const _exp=doExpand;
+doExpand=function(){if(!gkey())return _exp();
+ runText('expIn','expOut','Expand the given idea into a rich, detailed paragraph keeping the original meaning. Output only the expanded text.');}
+// Tone
+const _tone=doTone;
+doTone=function(){if(!gkey())return _tone();
+ runText('toneIn','toneOut','Rewrite the text in a '+document.getElementById('toneSel').value+' tone. Keep the meaning. Output only the rewritten text.');}
+// Translator
+const _tr=doTranslate;
+doTranslate=function(){if(!gkey())return _tr();
+ const lang=document.getElementById('trLang').value;
+ document.getElementById('trOut').setAttribute('dir',RTL.includes(lang)?'rtl':'ltr');
+ runText('trIn','trOut','Translate the text into '+lang+'. Output only the translation.');}
+
+// Sentiment
+const _sen=doSentiment;
+doSentiment=async function(){if(!gkey())return _sen();
+ const v=document.getElementById('senIn').value.trim();if(!v)return toast('Enter text first');
+ const el=document.getElementById('senOut');el.innerHTML='<div class="result">Loading…</div>';
+ try{
+  const j=JSON.parse(await groq('Analyze sentiment. Reply ONLY JSON: {"positive":int,"neutral":int,"negative":int} summing to 100.',v,true));
+  const pos=+j.positive||0,neu=+j.neutral||0,neg=+j.negative||0;
+  const dom=pos>=neu&&pos>=neg?'Positive 😊':neg>=neu?'Negative 😠':'Neutral 😐';
+  el.innerHTML=`<div class="result">Dominant: <b>${dom}</b><br>
+  Positive ${pos}% <div style="background:var(--border);border-radius:4px"><div style="width:${pos}%;background:#4CAF50;height:8px;border-radius:4px"></div></div>
+  Neutral ${neu}% <div style="background:var(--border);border-radius:4px"><div style="width:${neu}%;background:#FF9800;height:8px;border-radius:4px"></div></div>
+  Negative ${neg}% <div style="background:var(--border);border-radius:4px"><div style="width:${neg}%;background:#f44336;height:8px;border-radius:4px"></div></div></div>`;
+ }catch(e){el.innerHTML='<div class="result">Error: '+esc(e.message)+'</div>'}
+};
+
+// Keywords
+const _kw=doKeywords;
+doKeywords=async function(){if(!gkey())return _kw();
+ const v=document.getElementById('kwIn').value.trim();if(!v)return toast('Enter text first');
+ const mode=document.getElementById('kwMode').value,tag=mode==='Hashtags';
+ const el=document.getElementById('kwOut');el.innerHTML='<div class="result">Loading…</div>';
+ try{
+  const j=JSON.parse(await groq('Generate '+(tag?'18 hashtags (start with #)':'12 SEO keywords')+' for the text. Reply ONLY JSON: {"items":["..."]}',v,true));
+  const items=(j.items||[]).map(i=>String(i).replace(/['"\\]/g,''));
+  el.innerHTML='<div class="result">'+items.map(i=>`<span class="chip">${esc(i)}</span>`).join('')+
+  `<br><button class="btn" style="background:var(--border);color:var(--text);margin-top:.5rem" onclick="copyText('${items.join(', ')}')">Copy All</button></div>`;
+ }catch(e){el.innerHTML='<div class="result">Error: '+esc(e.message)+'</div>'}
+};
+
+// Math
+const _math=solveMath;
+solveMath=async function(){if(!gkey())return _math();
+ const q=document.getElementById('mathQ').value.trim();if(!q)return toast('Enter a problem first');
+ const lvl=document.getElementById('mathLevel').value;
+ const box=document.getElementById('mathResult');box.innerHTML='<div class="result">Solving…</div>';
+ try{
+  const ans=await groq('You are a math tutor. Level: '+lvl+'. Answer in plain text (no markdown) with sections: Problem, Step-by-Step Solution, Final Answer, Concepts Used, Alternative Method, Verification.',q);
+  box.innerHTML='<div class="result">'+esc(ans)+'</div>';
+  history.unshift({q:esc(q),lvl,a:esc(ans)});localStorage.setItem('mathHist',JSON.stringify(history));renderHist();
+ }catch(e){box.innerHTML='<div class="result">Error: '+esc(e.message)+'</div>'}
+};
+
+// Image: safety check -> enhance -> safety check -> generate (Hugging Face)
+const _img=genImage;
+genImage=async function(){if(!hkey())return _img();
+ const p=document.getElementById('imgPrompt').value.trim();if(!p)return toast('Enter a prompt first');
+ const out=document.getElementById('imgResult');out.innerHTML='<p>Checking prompt safety…</p>';
+ try{
+  const SAFE='You are a strict image-prompt safety filter. Reply ONLY JSON: {"safe":true|false}. Unsafe = sexual, gore, violence, hate, minors in harmful context, illegal acts, real-person deepfakes.';
+  const chk=async t=>gkey()?JSON.parse(await groq(SAFE,t,true)).safe!==false:true;
+  if(!(await chk(p))){out.innerHTML='<p>❌ Prompt blocked by safety filter. Please try a different prompt.</p>';return}
+  let enhanced=p;
+  if(gkey()){enhanced=await groq('Rewrite as a vivid, detailed image-generation prompt in one line. Output only the prompt.',p);
+   if(!(await chk(enhanced))){out.innerHTML='<p>❌ Enhanced prompt blocked by safety filter.</p>';return}}
+  out.innerHTML='<p><b>Enhanced Prompt:</b> '+esc(enhanced)+'</p><p>Generating image…</p>';
+  const {InferenceClient}=await import('https://esm.sh/@huggingface/inference');
+  const hf=new InferenceClient(hkey());
+  const blob=await hf.textToImage({provider:'auto',model:HF_MODEL,inputs:enhanced});
+  const url=await new Promise(res=>{const f=new FileReader();f.onload=()=>res(f.result);f.readAsDataURL(blob)});
+  out.innerHTML='<p><b>Enhanced Prompt:</b> '+esc(enhanced)+'</p>'+
+   `<img src="${url}" style="max-width:100%;border-radius:8px;margin-top:.5rem" alt="generated image"><br>
+   <button class="btn" style="background:var(--accent);color:#fff;margin-top:.5rem" onclick="downloadImg('${url}')">📥 Download Image</button>`;
+ }catch(e){out.innerHTML='<p>Error: '+esc(e.message)+'</p>'}
+};
 </script>
 </body>
 </html>
